@@ -1,125 +1,245 @@
-# General bot settings to use Pro settings you need to download Pro version from: www.automated-bots.com
+import os
+from dotenv import load_dotenv
 
-#PRO FEATURE - browser you want the bot to run ex: ["Chrome"] or ["Firefox"]. Firefox is only supported in Pro feature
-browser = ["Chrome"]
-# Enter your Linkedin password and username below. Do not commit this file after entering these credentials.
-# Linkedin credentials
-email = "YourLinkedin@UserEmail.com"
-password = "YourLinkedinPassword"
+# Load environment variables
+load_dotenv()
 
-#PRO FEATURE - Optional! run browser in headless mode, no browser screen will be shown it will work in background.
-headless = False
-#PRO FEATURE - Optional! If you left above credentials fields empty. For Firefox or Chrome enter profile dir to run the bot to prevent logging in your account each time
-# get Firefox profile path by typing following url: about:profiles
-firefoxProfileRootDir = r""
-# get Chrome profile path by typing following url: chrome://version/
-chromeProfilePath = r""
+# ============================================================================
+# CREDENTIALS (Loaded securely from .env file)
+# ============================================================================
+# DO NOT hardcode credentials here! Use .env file instead.
+LINKEDIN_EMAIL = os.getenv('LINKEDIN_EMAIL')
+LINKEDIN_PASSWORD = os.getenv('LINKEDIN_PASSWORD')
 
-# These settings are for running Linkedin job apply bot.
-# location you want to search the jobs - ex : ["Poland", "Singapore", "New York City Metropolitan Area", "Monroe County"]
-# continent locations:["Europe", "Asia", "Australia", "NorthAmerica", "SouthAmerica", "Africa", "Australia"]
-location = ["NorthAmerica"]
-# keywords related with your job search
-keywords = ["frontend", "react", "typescript","javascript", "vue", "python", "programming", "blockchain"]
-#job experience Level - ex:  ["Internship", "Entry level" , "Associate" , "Mid-Senior level" , "Director" , "Executive"]
-experienceLevels = [ "Entry level" ]
-#job posted date - ex: ["Any Time", "Past Month" , "Past Week" , "Past 24 hours"] - select only one
-datePosted = ["Past Week"]
-#job type - ex:  ["Full-time", "Part-time" , "Contract" , "Temporary", "Volunteer", "Intership", "Other"]
-jobType = ["Full-time", "Part-time" , "Contract"]
-#remote  - ex: ["On-site" , "Remote" , "Hybrid"]
-remote = ["On-site" , "Remote" , "Hybrid"]
-#salary - ex:["$40,000+", "$60,000+", "$80,000+", "$100,000+", "$120,000+", "$140,000+", "$160,000+", "$180,000+", "$200,000+" ] - select only one
-salary = [ "$80,000+"]
-#sort - ex:["Recent"] or ["Relevent"] - select only one
-sort = ["Recent"]
-#Blacklist companies you dont want to apply - ex: ["Apple","Google"]
-blacklistCompanies = []
-#Blaclist keywords in title - ex:["manager", ".Net"]
-blackListTitles = []
-#Follow companies after sucessfull application True - yes, False - no
-followCompanies = False
-#Below settings are for linkedin bot Pro, you can purchase monthly or yearly subscription to use them from me.
-#PRO FEATURE! - If you have multiple CV's you can choose which one you want the bot to use. (1- the first one on the list, 2 - second , etc)
-preferredCv = 1
-#PRO FEAUTRE! - Output unaswered questions into a seperate text file, will output radio box, dropdown and input field questions into seperate .yaml file
-outputSkippedQuestions = True
-#PRO FEATURE! - Use AI to fill and answer skipped questions. Will cost 5 credits per answer cause of computational power.
-useAiAutocomplete = False
-#PRO FEATURE! - Only Apply these companies -  ex: ["Apple","Google"] -  leave empty for all companies 
-onlyApplyCompanies = []
-#PRO FEATURE! - Only Apply titles having these keywords -  ex:["web", "remote"] - leave empty for all companies 
-onlyApplyTitles = [] 
-#PRO FEATURE! - Dont apply the job posted by the Hiring member contains this in his/her name - ex: ["adam","Sarah"]
-blockHiringMember = [] 
-#PRO FEATURE! - Only apply the job sposted by the Hiring member contains this in his/her name - ex: ["adam","Sarah"]
-onlyApplyHiringMember = [] 
-#PRO FEATURE! - Only apply jobs having less than applications - ex:["100"] will apply jobs having upto 100 applications 
-onlyApplyMaxApplications = []
-#PRO FEATURE! - Only apply jobs having more than applications - ex:["10"] will apply jobs having more than 10 applications 
-onlyApplyMinApplications = []
-#PRO FEATURE! - Only apply jobs having these keywords in the job description
-onlyApplyJobDescription = []
-#PRO FEATURE! - Do not apply the jobs having these keywords in the job description
-blockJobDescription = []
-#PRO FEATURE! - Apply companies having equal or more than employes - ex: ["100"]
-onlyAppyMimEmployee = []
-#PRO FEATURE - Apply the ones linkedin is saying "you may be a goodfit"
-onlyApplyLinkedinRecommending = False
-#PRO FEATURE - Only apply the ones you have skilled badge
-onlyApplySkilledBages = False
-#PRO FEATURE! - Save the jobs by pressing SAVE button before apply  True - yes, False - no
-saveBeforeApply = False
-#PRO FEATURE! - Sent a message to the hiring manager once you apply for the role
-messageToHiringManager = ""
-#PRO FEATURE! - List and output non Easy Apply jobs links
-listNonEasyApplyJobsUrl = False
-#PRO FEATURE! - Select radio button for unsawered questions. If the bot cannot find an answer for a radio button, it will automatically select first or second option. Default radio button answer, 1 for Yes, 2 for No. Leave empty if you dont want this option.
-defaultRadioOption = 1
-#PRO FEATURE! - Check yes or no to all checkbox questions (True - yes, False - no), leave empty if you dont want this option
-answerAllCheckboxes = ""
-#PRO FEAUTRE! - Output file type. Can be .txt or .csv (excel) 
-outputFileType = [".txt"]
 
-# These settings are for running AngelCO job apply bot you need to purchase AngelCo bot obtain bot password, paste below and then run the bot.
-AngelCoBotPassword = ""
-# AngelCO credits
-AngelCoEmail = ""
-AngelCoPassword = ""
-# jobTitle ex: ["Frontend Engineer", "Marketing"]
-angelCoJobTitle = ["Frontend Engineer"]
-# location ex: ["Poland"]
-angelCoLocation = ["Poland"]
+# ============================================================================
+# JOB SEARCH PARAMETERS
+# ============================================================================
 
-# These settings are for running GlobalLogic job apply bot you need to purchase GlobalLogic bot obtain bot password, paste below and then run the bot.
-GlobalLogicBotPassword = ""
-# AngelCO credits
-GlobalLogicEmail = ""
-GlobalLogicPassword = ""
-# Functions ex: ["Administration", "Business Development", "Business Solutions", "Content Engineering", 	
-# Delivery Enablement", Engineering, Finance, IT Infrastructure, Legal, Marketing, People Development,
-# Process Management, Product Support, Quality Assurance,Sales, Sales Enablement,Technology, Usability and Design]
-GlobalLogicFunctions = ["Engineering"]
-# Global logic experience: ["0-1 years", "1-3 years", "3-5 years", "5-10 years", "10-15 years","15+ years"]
-GlobalLogicExperience = ["0-1 years", "1-3 years"]
-# Global logic location filter: ["Argentina", "Chile", "Crotia", "Germany", "India","Japan", "Poland"
-# Romania, Sweden, Switzerland,Ukraine, United States]
-GlobalLogicLocation = ["poland"]
-# Freelance yes or no
-GlobalLogicFreelance = ["no"]
-# Remote work yes or no
-GlobalLogicRemoteWork = ["yes"]
-# Optional! Keyword:["javascript", "react", "angular", ""]
-GlobalLogicKeyword = ["react"]
-# Global Logic Job apply settinngs
-FirstName = "O"
-LastName = "D"
-Email = "asdsa@gmail.com"
-LinkedInProfileURL = "www.google.com"
-Phone = "" #OPTIONAL
-Location = "" #OPTIONAL
-HowDidYouHeard = "" #OPTIONAL
-ConsiderMeForFutureOffers = True #true = yes, false = no
+# Locations to search jobs in
+# For India: Can specify continent "Asia" or specific cities
+# Examples: ["India"], ["Asia"], ["Bangalore", "Mumbai", "Delhi"]
+LOCATIONS = [
+    "Asia",
+    "India", 
+    "Bangalore", 
+    "Mumbai", 
+    "Delhi", 
+    "Pune", 
+    "Hyderabad"
+]
 
- # Testing & Debugging features
-displayWarnings = False
+# Keywords for job search - Your skills and target roles
+# Add all relevant technologies, roles, and skills
+KEYWORDS = [
+    "Data Science",
+    "AI Engineer",
+    "ML Engineer",
+    "Machine Learning",
+    "vector databases",
+    "RAG",
+    "python",
+    "Data Analyst",
+    "Python Developer",
+    "Data Engineer",
+    "Business Analyst",
+    "NLP Engineer"
+]
+
+# Experience Levels
+# Options: "Internship", "Entry level", "Associate", "Mid-Senior level", "Director", "Executive"
+EXPERIENCE_LEVELS = [
+    "Entry level",
+    "Internship"  # Fixed typo from your original config
+]
+
+# Date Posted - When the job was posted
+# Options: "Any Time", "Past Month", "Past Week", "Past 24 hours"
+# Select only ONE
+DATE_POSTED = "Past Week"
+
+# Job Types - Full-time, part-time, etc.
+# Options: "Full-time", "Part-time", "Contract", "Temporary", "Volunteer", "Internship", "Other"
+# Can select multiple
+JOB_TYPES = [
+    "Full-time",
+    "Part-time",
+    "Contract"
+]
+
+# Remote Work Options
+# Options: "On-site", "Remote", "Hybrid"
+# Can select multiple or all three
+REMOTE_OPTIONS = [
+    "On-site",
+    "Remote",
+    "Hybrid"
+]
+
+# Salary Filter
+# Leave empty ("") to IGNORE salary filters (as you requested)
+# Options: "$40,000+", "$60,000+", "$80,000+", "$100,000+", "$120,000+", 
+#          "$140,000+", "$160,000+", "$180,000+", "$200,000+"
+# Select only ONE or leave empty
+SALARY = ""  # Empty = No salary filter
+
+# Sort Results By
+# Options: "Recent" or "Relevant"
+# Select only ONE
+SORT_BY = "Recent"
+
+
+# ============================================================================
+# FILTERING & BLACKLISTS
+# ============================================================================
+
+# Companies to SKIP (won't apply to these)
+# Example: ["Apple", "Google", "Microsoft"]
+BLACKLIST_COMPANIES = []
+
+# Job titles to SKIP (won't apply if title contains these words)
+# Example: ["manager", ".Net", "Senior", "Lead", "Director"]
+# Useful to avoid jobs requiring more experience
+BLACKLIST_TITLES = [
+    # Uncomment to skip senior positions:
+    # "Senior",
+    # "Lead", 
+    # "Manager",
+    # "Director",
+    # "Principal",
+    # "Staff",
+    # "Head of"
+]
+
+
+# ============================================================================
+# APPLICATION BEHAVIOR SETTINGS
+# ============================================================================
+
+# Maximum number of applications per run (SAFETY LIMIT)
+# Start with 20-25, don't go too high to avoid detection
+# Recommended: 20-30 per day maximum
+MAX_APPLICATIONS_PER_RUN = 25
+
+# Follow companies after successful application?
+# True = Yes, False = No
+FOLLOW_COMPANIES = False
+
+# Which resume to use if you have multiple uploaded
+# 0 = first resume, 1 = second resume, etc.
+PREFERRED_RESUME_INDEX = 0
+
+
+# ============================================================================
+# BOT BEHAVIOR - HUMAN-LIKE ACTIONS
+# ============================================================================
+# These settings make the bot appear more human to avoid detection
+
+# Delay between actions (in seconds)
+MIN_DELAY = 3   # Minimum seconds to wait
+MAX_DELAY = 8   # Maximum seconds to wait
+
+# Time spent "reading" job descriptions (in seconds)
+# Bot will pause and appear to read the job posting
+READING_TIME_MIN = 10  # Minimum reading time
+READING_TIME_MAX = 25  # Maximum reading time
+
+# Random skip probability
+# Bot will randomly skip some jobs to appear more human
+# 0.15 = 15% chance to skip each job
+SKIP_PROBABILITY = 0.15
+
+# Randomize the order jobs are processed
+# True = Apply to jobs in random order (more human)
+# False = Apply in the order LinkedIn shows them
+RANDOMIZE_JOB_ORDER = True
+
+
+# ============================================================================
+# BROWSER SETTINGS
+# ============================================================================
+
+# Use Undetected Chrome (better detection avoidance but can have version issues)
+# If you're having Chrome version issues, set this to False
+USE_UNDETECTED_CHROME = True  # True = Harder to detect, False = More compatible
+
+# DRY RUN MODE - Test without actually applying!
+# True = Bot will go through motions but NOT submit applications
+# False = Bot will actually apply to jobs
+# ALWAYS test with True first!
+DRY_RUN = True  # CHANGE TO False WHEN READY TO APPLY FOR REAL
+
+# Headless mode - Run browser in background
+# True = No browser window shown (runs in background)
+# False = Show browser window (recommended for first time)
+HEADLESS_MODE = False
+
+# Save screenshots of successful applications
+# True = Take screenshot after each successful application
+# False = Don't save screenshots
+SAVE_SCREENSHOTS = True
+
+# Use saved cookies (stay logged in between runs)
+# True = Remember login session (recommended)
+# False = Login every time
+USE_SAVED_COOKIES = True
+
+# Display warning messages in console
+# True = Show all warnings and debug info
+# False = Only show important messages
+DISPLAY_WARNINGS = False
+
+# Debug mode - shows detailed info about what bot is doing
+# Useful for troubleshooting when things don't work
+DEBUG_MODE = True  # Set to False once everything works
+
+
+# ============================================================================
+# ADVANCED SETTINGS (Optional)
+# ============================================================================
+
+# Output file type for logs
+# Options: ".txt" or ".csv"
+OUTPUT_FILE_TYPE = ".txt"
+
+# Save jobs before applying (click the SAVE button)
+# True = Save job to your LinkedIn saves before applying
+# False = Just apply without saving
+SAVE_JOBS_BEFORE_APPLY = False
+
+
+# ============================================================================
+# USAGE NOTES & TIPS
+# ============================================================================
+"""
+FIRST TIME SETUP:
+1. Set DRY_RUN = True
+2. Set MAX_APPLICATIONS_PER_RUN = 5
+3. Run the bot and watch what it does
+4. Check the console output and logs
+5. When comfortable, set DRY_RUN = False
+6. Gradually increase MAX_APPLICATIONS_PER_RUN to 20-25
+
+SAFETY TIPS:
+- Start with 20-25 applications per day MAX
+- Run bot once per day maximum
+- Monitor your LinkedIn account for warnings
+- If you get warnings, STOP immediately and wait 3-7 days
+
+FOR YOUR USE CASE (India, No Salary Filter):
+✅ LOCATIONS already includes India + major cities
+✅ SALARY is empty (ignores salary filters as you wanted)
+✅ EXPERIENCE_LEVELS focuses on entry level
+✅ All job types and remote options included
+
+CUSTOMIZATION:
+- Edit KEYWORDS to match your exact skills
+- Add to BLACKLIST_TITLES to skip unwanted roles
+- Adjust delays if you want slower/faster behavior
+- Change MAX_APPLICATIONS_PER_RUN based on comfort level
+
+MONITORING:
+- Check console output while running
+- Review applications_YYYYMMDD.txt file after each run
+- Track success rate and adjust filters accordingly
+"""

@@ -177,3 +177,7 @@ geckodriver.log
 angelco.py
 globalLogicCode.py
 linkedinProCode.py
+
+# debug stuff
+debug_screenshots
+screenshots

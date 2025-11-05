@@ -1,268 +1,241 @@
-import math,constants,config,time
-from typing import List
+import time
+import random
+import math
+import pyautogui
+from datetime import datetime
+from typing import List, Tuple
 
-from selenium import webdriver
+class Colors:
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    MAGENTA = '\033[95m'
+    CYAN = '\033[96m'
+    END = '\033[0m'
 
-def chromeBrowserOptions():
-    options = webdriver.ChromeOptions()
-    options.add_argument('--no-sandbox')
-    options.add_argument("--ignore-certificate-errors")
-    options.add_argument("--disable-extensions")
-    options.add_argument('--disable-gpu')
-    options.add_argument('--disable-dev-shm-usage')
-    if(config.headless):
-        options.add_argument("--headless")
-    options.add_argument("--start-maximized")
-    options.add_argument("--disable-blink-features")
-    options.add_argument("--disable-blink-features=AutomationControlled")
-    options.add_experimental_option('useAutomationExtension', False)
-    options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    if(len(config.chromeProfilePath)>0):
-        initialPath = config.chromeProfilePath[0:config.chromeProfilePath.rfind("/")]
-        profileDir = config.chromeProfilePath[config.chromeProfilePath.rfind("/")+1:]
-        options.add_argument('--user-data-dir=' +initialPath)
-        options.add_argument("--profile-directory=" +profileDir)
-    else:
-        options.add_argument("--incognito")
-    return options
+def print_colored(text: str, color: str):
+    """Print colored text to console"""
+    print(f"{color}{text}{Colors.END}")
 
-def prRed(prt):
-    print(f"\033[91m{prt}\033[00m")
+def print_success(text: str):
+    print_colored(f"✅ {text}", Colors.GREEN)
 
-def prGreen(prt):
-    print(f"\033[92m{prt}\033[00m")
+def print_error(text: str):
+    print_colored(f"❌ {text}", Colors.RED)
 
-def prYellow(prt):
-    print(f"\033[93m{prt}\033[00m")
+def print_warning(text: str):
+    print_colored(f"⚠️  {text}", Colors.YELLOW)
 
-def getUrlDataFile():
-    urlData = ""
+def print_info(text: str):
+    print_colored(f"ℹ️  {text}", Colors.CYAN)
+
+def human_delay(min_seconds: float = 2, max_seconds: float = 5):
+    """Simulate human-like delay with random timing"""
+    delay = random.uniform(min_seconds, max_seconds)
+    time.sleep(delay)
+
+def reading_delay(min_seconds: float = 10, max_seconds: float = 25):
+    """Simulate time spent reading job description"""
+    delay = random.uniform(min_seconds, max_seconds)
+    print_info(f"Reading job description for {delay:.1f} seconds...")
+    time.sleep(delay)
+
+def random_mouse_movement():
+    """Add random mouse movements to appear more human"""
     try:
-        file = open('data/urlData.txt', 'r')
-        urlData = file.readlines()
-    except FileNotFoundError:
-        text = "FileNotFound:urlData.txt file is not found. Please run ./data folder exists and check config.py values of yours. Then run the bot again"
-        prRed(text)
-    return urlData
-
-def jobsToPages(numOfJobs: str) -> int:
-  number_of_pages = 1
-
-  if (' ' in numOfJobs):
-    spaceIndex = numOfJobs.index(' ')
-    totalJobs = (numOfJobs[0:spaceIndex])
-    totalJobs_int = int(totalJobs.replace(',', ''))
-    number_of_pages = math.ceil(totalJobs_int/constants.jobsPerPage)
-    if (number_of_pages > 40 ): number_of_pages = 40
-
-  else:
-      number_of_pages = int(numOfJobs)
-
-  return number_of_pages
-
-def urlToKeywords(url: str) -> List[str]:
-    keywordUrl = url[url.index("keywords=")+9:]
-    keyword = keywordUrl[0:keywordUrl.index("&") ] 
-    locationUrl =  url[url.index("location=")+9:]
-    location = locationUrl[0:locationUrl.index("&") ] 
-    return [keyword,location]
-
-def writeResults(text: str):
-    timeStr = time.strftime("%Y%m%d")
-    fileName = "Applied Jobs DATA - " +timeStr + ".txt"
-    try:
-        with open("data/" +fileName, encoding="utf-8" ) as file:
-            lines = []
-            for line in file:
-                if "----" not in line:
-                    lines.append(line)
-                
-        with open("data/" +fileName, 'w' ,encoding="utf-8") as f:
-            f.write("---- Applied Jobs Data ---- created at: " +timeStr+ "\n" )
-            f.write("---- Number | Job Title | Company | Location | Work Place | Posted Date | Applications | Result "   +"\n" )
-            for line in lines: 
-                f.write(line)
-            f.write(text+ "\n")
-            
+        current_x, current_y = pyautogui.position()
+        offset_x = random.randint(-100, 100)
+        offset_y = random.randint(-100, 100)
+        duration = random.uniform(0.5, 1.5)
+        pyautogui.moveTo(current_x + offset_x, current_y + offset_y, duration=duration)
     except:
-        with open("data/" +fileName, 'w', encoding="utf-8") as f:
-            f.write("---- Applied Jobs Data ---- created at: " +timeStr+ "\n" )
-            f.write("---- Number | Job Title | Company | Location | Work Place | Posted Date | Applications | Result "   +"\n" )
+        pass  # Fail silently if mouse control isn't available
 
-            f.write(text+ "\n")
-
-def printInfoMes(bot:str):
-    prYellow("ℹ️ " +bot+ " is starting soon... ")
-
-def donate(self):
-    prYellow('If you like the project, please support me so that i can make more such projects, thanks!')
+def calculate_pages(total_jobs: str, jobs_per_page: int = 25) -> int:
+    """Calculate number of pages from total jobs string"""
     try:
-        self.driver.get('https://www.automated-bots.com/')
+        if ' ' in total_jobs:
+            space_index = total_jobs.index(' ')
+            total = total_jobs[0:space_index].replace(',', '')
+            total_int = int(total)
+            pages = math.ceil(total_int / jobs_per_page)
+            return min(pages, 40)  # Max 40 pages for safety
+        else:
+            return int(total_jobs)
+    except:
+        return 1
+
+def should_skip_randomly(probability: float = 0.15) -> bool:
+    """Randomly decide to skip a job (makes behavior more human)"""
+    return random.random() < probability
+
+def log_application(job_data: dict, status: str):
+    """Log application results to file"""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_file = f"applications_{datetime.now().strftime('%Y%m%d')}.txt"
+    
+    try:
+        with open(log_file, 'a', encoding='utf-8') as f:
+            log_entry = (
+                f"\n[{timestamp}] {status}\n"
+                f"Title: {job_data.get('title', 'N/A')}\n"
+                f"Company: {job_data.get('company', 'N/A')}\n"
+                f"Location: {job_data.get('location', 'N/A')}\n"
+                f"URL: {job_data.get('url', 'N/A')}\n"
+                f"{'-'*80}\n"
+            )
+            f.write(log_entry)
     except Exception as e:
-        prRed("Error in donate: " +str(e))
+        print_error(f"Failed to log application: {str(e)}")
 
-class LinkedinUrlGenerate:
-    def generateUrlLinks(self):
-        path = []
-        for location in config.location:
-            for keyword in config.keywords:
-                    url = constants.linkJobUrl + "?f_AL=true&keywords=" +keyword+self.jobType()+self.remote()+self.checkJobLocation(location)+self.jobExp()+self.datePosted()+self.salary()+self.sortBy()
-                    path.append(url)
-        return path
+def build_search_url(keyword: str, location: str, config) -> str:
+    """Build LinkedIn job search URL with filters - Python 3.8 compatible"""
+    base_url = "https://www.linkedin.com/jobs/search/"
+    
+    # Start with Easy Apply filter
+    params = ["f_AL=true"]
+    
+    # Add keywords and location
+    params.append(f"keywords={keyword.replace(' ', '%20')}")
+    params.append(f"location={location.replace(' ', '%20')}")
+    
+    # Add location GeoID if continent (using if-elif instead of match)
+    location_lower = location.lower()
+    if location_lower == "asia":
+        params.append("geoId=102393603")
+    elif location_lower == "europe":
+        params.append("geoId=100506914")
+    elif location_lower in ["north america", "northamerica"]:
+        params.append("geoId=102221843")
+    elif location_lower in ["south america", "southamerica"]:
+        params.append("geoId=104514572")
+    elif location_lower == "australia":
+        params.append("geoId=101452733")
+    elif location_lower == "africa":
+        params.append("geoId=103537801")
+    
+    # Add experience levels (using if-elif instead of match)
+    if config.EXPERIENCE_LEVELS:
+        exp_codes = []
+        for level in config.EXPERIENCE_LEVELS:
+            if level == "Internship":
+                exp_codes.append("1")
+            elif level == "Entry level":
+                exp_codes.append("2")
+            elif level == "Associate":
+                exp_codes.append("3")
+            elif level == "Mid-Senior level":
+                exp_codes.append("4")
+            elif level == "Director":
+                exp_codes.append("5")
+            elif level == "Executive":
+                exp_codes.append("6")
+        
+        if exp_codes:
+            params.append(f"f_E={('%2C').join(exp_codes)}")
+    
+    # Add job types (using if-elif instead of match)
+    if config.JOB_TYPES:
+        type_codes = []
+        for jt in config.JOB_TYPES:
+            if jt == "Full-time":
+                type_codes.append("F")
+            elif jt == "Part-time":
+                type_codes.append("P")
+            elif jt == "Contract":
+                type_codes.append("C")
+            elif jt == "Temporary":
+                type_codes.append("T")
+            elif jt == "Volunteer":
+                type_codes.append("V")
+            elif jt == "Internship":
+                type_codes.append("I")
+            elif jt == "Other":
+                type_codes.append("O")
+        
+        if type_codes:
+            params.append(f"f_JT={('%2C').join(type_codes)}")
+    
+    # Add remote options (using if-elif instead of match)
+    if config.REMOTE_OPTIONS:
+        remote_codes = []
+        for opt in config.REMOTE_OPTIONS:
+            if opt == "On-site":
+                remote_codes.append("1")
+            elif opt == "Remote":
+                remote_codes.append("2")
+            elif opt == "Hybrid":
+                remote_codes.append("3")
+        
+        if remote_codes:
+            params.append(f"f_WT={('%2C').join(remote_codes)}")
+    
+    # Add date posted (using if-elif instead of match)
+    if config.DATE_POSTED == "Past 24 hours":
+        params.append("f_TPR=r86400")
+    elif config.DATE_POSTED == "Past Week":
+        params.append("f_TPR=r604800")
+    elif config.DATE_POSTED == "Past Month":
+        params.append("f_TPR=r2592000")
+    # "Any Time" adds nothing
+    
+    # Add salary if specified (using if-elif instead of match)
+    if config.SALARY:
+        if config.SALARY == "$40,000+":
+            params.append("f_SB2=1")
+        elif config.SALARY == "$60,000+":
+            params.append("f_SB2=2")
+        elif config.SALARY == "$80,000+":
+            params.append("f_SB2=3")
+        elif config.SALARY == "$100,000+":
+            params.append("f_SB2=4")
+        elif config.SALARY == "$120,000+":
+            params.append("f_SB2=5")
+        elif config.SALARY == "$140,000+":
+            params.append("f_SB2=6")
+        elif config.SALARY == "$160,000+":
+            params.append("f_SB2=7")
+        elif config.SALARY == "$180,000+":
+            params.append("f_SB2=8")
+        elif config.SALARY == "$200,000+":
+            params.append("f_SB2=9")
+    
+    # Add sort (using if-elif instead of match)
+    if config.SORT_BY == "Recent":
+        params.append("sortBy=DD")
+    else:
+        params.append("sortBy=R")
+    
+    return base_url + "?" + "&".join(params)
 
-    def checkJobLocation(self,job):
-        jobLoc = "&location=" +job
-        match job.casefold():
-            case "asia":
-                jobLoc += "&geoId=102393603"
-            case "europe":
-                jobLoc += "&geoId=100506914"
-            case "northamerica":
-                jobLoc += "&geoId=102221843&"
-            case "southamerica":
-                jobLoc +=  "&geoId=104514572"
-            case "australia":
-                jobLoc +=  "&geoId=101452733"
-            case "africa":
-                jobLoc += "&geoId=103537801"
+def extract_job_id_from_url(url: str) -> str:
+    """Extract job ID from LinkedIn job URL"""
+    try:
+        if '/view/' in url:
+            return url.split('/view/')[-1].split('/')[0].split('?')[0]
+        return ""
+    except:
+        return ""
 
-        return jobLoc
-
-    def jobExp(self):
-        jobtExpArray = config.experienceLevels
-        firstJobExp = jobtExpArray[0]
-        jobExp = ""
-        match firstJobExp:
-            case "Internship":
-                jobExp = "&f_E=1"
-            case "Entry level":
-                jobExp = "&f_E=2"
-            case "Associate":
-                jobExp = "&f_E=3"
-            case "Mid-Senior level":
-                jobExp = "&f_E=4"
-            case "Director":
-                jobExp = "&f_E=5"
-            case "Executive":
-                jobExp = "&f_E=6"
-        for index in range (1,len(jobtExpArray)):
-            match jobtExpArray[index]:
-                case "Internship":
-                    jobExp += "%2C1"
-                case "Entry level":
-                    jobExp +="%2C2"
-                case "Associate":
-                    jobExp +="%2C3"
-                case "Mid-Senior level":
-                    jobExp += "%2C4"
-                case "Director":
-                    jobExp += "%2C5"
-                case "Executive":
-                    jobExp  +="%2C6"
-
-        return jobExp
-
-    def datePosted(self):
-        datePosted = ""
-        match config.datePosted[0]:
-            case "Any Time":
-                datePosted = ""
-            case "Past Month":
-                datePosted = "&f_TPR=r2592000&"
-            case "Past Week":
-                datePosted = "&f_TPR=r604800&"
-            case "Past 24 hours":
-                datePosted = "&f_TPR=r86400&"
-        return datePosted
-
-    def jobType(self):
-        jobTypeArray = config.jobType
-        firstjobType = jobTypeArray[0]
-        jobType = ""
-        match firstjobType:
-            case "Full-time":
-                jobType = "&f_JT=F"
-            case "Part-time":
-                jobType = "&f_JT=P"
-            case "Contract":
-                jobType = "&f_JT=C"
-            case "Temporary":
-                jobType = "&f_JT=T"
-            case "Volunteer":
-                jobType = "&f_JT=V"
-            case "Intership":
-                jobType = "&f_JT=I"
-            case "Other":
-                jobType = "&f_JT=O"
-        for index in range (1,len(jobTypeArray)):
-            match jobTypeArray[index]:
-                case "Full-time":
-                    jobType += "%2CF"
-                case "Part-time":
-                    jobType +="%2CP"
-                case "Contract":
-                    jobType +="%2CC"
-                case "Temporary":
-                    jobType += "%2CT"
-                case "Volunteer":
-                    jobType += "%2CV"
-                case "Intership":
-                    jobType  +="%2CI"
-                case "Other":
-                    jobType  +="%2CO"
-        jobType += "&"
-        return jobType
-
-    def remote(self):
-        remoteArray = config.remote
-        firstJobRemote = remoteArray[0]
-        jobRemote = ""
-        match firstJobRemote:
-            case "On-site":
-                jobRemote = "f_WT=1"
-            case "Remote":
-                jobRemote = "f_WT=2"
-            case "Hybrid":
-                jobRemote = "f_WT=3"
-        for index in range (1,len(remoteArray)):
-            match remoteArray[index]:
-                case "On-site":
-                    jobRemote += "%2C1"
-                case "Remote":
-                    jobRemote += "%2C2"
-                case "Hybrid":
-                    jobRemote += "%2C3"
-
-        return jobRemote
-
-    def salary(self):
-        salary = ""
-        match config.salary[0]:
-            case "$40,000+":
-                salary = "f_SB2=1&"
-            case "$60,000+":
-                salary = "f_SB2=2&"
-            case "$80,000+":
-                salary = "f_SB2=3&"
-            case "$100,000+":
-                salary = "f_SB2=4&"
-            case "$120,000+":
-                salary = "f_SB2=5&"
-            case "$140,000+":
-                salary = "f_SB2=6&"
-            case "$160,000+":
-                salary = "f_SB2=7&"    
-            case "$180,000+":
-                salary = "f_SB2=8&"    
-            case "$200,000+":
-                salary = "f_SB2=9&"                  
-        return salary
-
-    def sortBy(self):
-        sortBy = ""
-        match config.sort[0]:
-            case "Recent":
-                sortBy = "sortBy=DD"
-            case "Relevent":
-                sortBy = "sortBy=R"                
-        return sortBy
+class ApplicationStats:
+    """Track application statistics"""
+    def __init__(self):
+        self.total_viewed = 0
+        self.applied = 0
+        self.already_applied = 0
+        self.skipped = 0
+        self.failed = 0
+        self.blacklisted = 0
+    
+    def print_summary(self):
+        print_info("\n" + "="*50)
+        print_info("APPLICATION SUMMARY")
+        print_info("="*50)
+        print_colored(f"Jobs Viewed: {self.total_viewed}", Colors.CYAN)
+        print_success(f"Successfully Applied: {self.applied}")
+        print_colored(f"Already Applied: {self.already_applied}", Colors.BLUE)
+        print_warning(f"Skipped (Random): {self.skipped}")
+        print_warning(f"Blacklisted: {self.blacklisted}")
+        print_error(f"Failed: {self.failed}")
+        print_info("="*50 + "\n")

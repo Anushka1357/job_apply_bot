@@ -1,2 +1,6 @@
-selenium
-webdriver_manager
+selenium==4.15.2
+undetected-chromedriver==3.5.4
+python-dotenv==1.0.0
+fake-useragent==1.4.0
+webdriver-manager==4.0.1
+pyautogui==0.9.54
